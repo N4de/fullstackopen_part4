@@ -1,0 +1,19 @@
+{
+  "name": "fullstackopen_part4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/N4de/fullstackopen_part4.git"
+  },
+  "author": "Jari Annala",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/N4de/fullstackopen_part4/issues"
+  },
+  "homepage": "https://github.com/N4de/fullstackopen_part4#readme"
+}
