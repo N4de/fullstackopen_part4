@@ -52,9 +52,36 @@ const mostBlogs = (blogs) => {
   return bestAuthor;
 };
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return {};
+  }
+
+  const authors = {};
+  let bestAuthor = {
+    likes: 0,
+  };
+
+  blogs.forEach((blog) => {
+    authors[blog.author] = (authors[blog.author] || 0) + blog.likes;
+  });
+
+  _.forIn(authors, (value, key) => {
+    if (value > bestAuthor.likes) {
+      bestAuthor = {
+        author: key,
+        likes: value,
+      };
+    }
+  });
+
+  return bestAuthor;
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favouriteBlog,
   mostBlogs,
+  mostLikes,
 };
