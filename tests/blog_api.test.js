@@ -71,6 +71,25 @@ test('blog can be added with POST', async () => {
   );
 });
 
+test('posting blog without likes adds likes to object', async () => {
+  const newBlog = {
+    _id: '5a422b891b54a676234d17fa',
+    title: 'First class tests',
+    author: 'Robert C. Martin',
+    url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+    __v: 0,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const response = await api.get('/api/blogs');
+  expect(response.body[initialBlogs.length].likes).toBeDefined();
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
