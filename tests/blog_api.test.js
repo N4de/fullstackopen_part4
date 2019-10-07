@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
@@ -26,11 +27,11 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  let blogObject = new Blog(initialBlogs[0]);
-  await blogObject.save();
-
-  blogObject = new Blog(initialBlogs[1]);
-  await blogObject.save();
+  for (const blog of initialBlogs) {
+    const blogObject = new Blog(blog);
+    // eslint-disable-next-line no-await-in-loop
+    await blogObject.save();
+  }
 });
 
 test('all blogs are returned', async () => {
@@ -88,6 +89,19 @@ test('posting blog without likes adds likes to object', async () => {
 
   const response = await api.get('/api/blogs');
   expect(response.body[initialBlogs.length].likes).toBeDefined();
+});
+
+test('posting blog without title or url return 400', async () => {
+  const newBlog = {
+    _id: '5a422b891b54a676234d17fa',
+    author: 'Robert C. Martin',
+    __v: 0,
+  };
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400);
 });
 
 afterAll(() => {
