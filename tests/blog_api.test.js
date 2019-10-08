@@ -1,33 +1,17 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-restricted-syntax */
 const mongoose = require('mongoose');
 const supertest = require('supertest');
 const app = require('../app');
 const Blog = require('../models/blog');
+const helper = require('./test_helper');
 
 const api = supertest(app);
 
-const initialBlogs = [
-  {
-    _id: '5a422a851b54a676234d17f7',
-    title: 'React patterns',
-    author: 'Michael Chan',
-    url: 'https://reactpatterns.com/',
-    likes: 7,
-    __v: 0,
-  },
-  {
-    _id: '5a422aa71b54a676234d17f8',
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
-    url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-    likes: 5,
-    __v: 0,
-  },
-];
 
 beforeEach(async () => {
   await Blog.deleteMany({});
-  for (const blog of initialBlogs) {
+  for (const blog of helper.initialBlogs) {
     const blogObject = new Blog(blog);
     // eslint-disable-next-line no-await-in-loop
     await blogObject.save();
@@ -66,7 +50,8 @@ test('blog can be added with POST', async () => {
 
   const titles = response.body.map((r) => r.title);
 
-  expect(response.body.length).toBe(initialBlogs.length + 1);
+
+  expect(response.body.length).toBe(helper.initialBlogs.length + 1);
   expect(titles).toContain(
     'First class tests',
   );
@@ -88,7 +73,7 @@ test('posting blog without likes adds likes to object', async () => {
     .expect('Content-Type', /application\/json/);
 
   const response = await api.get('/api/blogs');
-  expect(response.body[initialBlogs.length].likes).toBeDefined();
+  expect(response.body[helper.initialBlogs.length].likes).toBeDefined();
 });
 
 test('posting blog without title or url return 400', async () => {
@@ -103,6 +88,18 @@ test('posting blog without title or url return 400', async () => {
     .send(newBlog)
     .expect(400);
 });
+
+test('deleting blog works', async () => {
+  const blogToDelete = helper.initialBlogs[0];
+
+  await api
+    .delete(`api/blogs/${blogToDelete._id}`)
+    .expect(204);
+
+  const response = await api.get('/api/blogs');
+  expect(response.body.length).toBe(helper.initialBlogs.length - 1);
+});
+
 
 afterAll(() => {
   mongoose.connection.close();
