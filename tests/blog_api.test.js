@@ -57,6 +57,7 @@ test('blog can be added with POST', async () => {
   );
 });
 
+
 test('posting blog without likes adds likes to object', async () => {
   const newBlog = {
     _id: '5a422b891b54a676234d17fa',
@@ -89,17 +90,17 @@ test('posting blog without title or url return 400', async () => {
     .expect(400);
 });
 
-test('deleting blog works', async () => {
+test('deleting blog works if id is valid', async () => {
   const blogToDelete = helper.initialBlogs[0];
 
   await api
-    .delete(`api/blogs/${blogToDelete._id}`)
+    .delete(`/api/blogs/${blogToDelete._id}`)
     .expect(204);
 
-  const response = await api.get('/api/blogs');
-  expect(response.body.length).toBe(helper.initialBlogs.length - 1);
-});
+  const contents = await helper.blogsInDb();
 
+  expect(contents).not.toContain(blogToDelete._id);
+});
 
 afterAll(() => {
   mongoose.connection.close();
