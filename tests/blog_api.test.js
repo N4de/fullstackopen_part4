@@ -102,6 +102,20 @@ test('deleting blog works if id is valid', async () => {
   expect(contents).not.toContain(blogToDelete._id);
 });
 
+test('updating blog works if id is valid', async () => {
+  const blogToUpdate = helper.initialBlogs[0];
+  const newAuthorName = 'Bookman1';
+
+  await api
+    .put(`/api/blogs/${blogToUpdate._id}`)
+    .send({ author: newAuthorName })
+    .expect(200);
+
+  const contents = await helper.blogsInDb();
+
+  expect(contents[0].author).toBe(newAuthorName);
+});
+
 afterAll(() => {
   mongoose.connection.close();
 });
