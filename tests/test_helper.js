@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 const initialBlogs = [
   {
@@ -20,6 +21,25 @@ const initialBlogs = [
   },
 ];
 
+const initialUsers = [
+  {
+    _id: '5a422a851b54a676234d17f7',
+    username: 'testman',
+    name: 'Michael Chan',
+    __v: 0,
+  },
+  {
+    _id: '5a422a851b54a676234d17ff',
+    username: 'testman',
+    name: 'Michael Chan',
+    __v: 0,
+  },
+];
+
+const usersInDb = async () => {
+  const users = await User.find({});
+  return users.map((user) => user.toJSON());
+};
 
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon', url: 'www.kiekko.tk' });
@@ -35,5 +55,9 @@ const blogsInDb = async () => {
 };
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb,
+  initialBlogs,
+  nonExistingId,
+  blogsInDb,
+  initialUsers,
+  usersInDb,
 };
