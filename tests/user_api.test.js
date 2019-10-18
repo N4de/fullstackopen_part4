@@ -42,6 +42,32 @@ describe('User POST', () => {
       'testman',
     );
   });
+
+  test('returns 400 when username too short', async () => {
+    const newUser = {
+      username: 'sh',
+      password: 'testpassword',
+      name: 'Robert C. Martin',
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400);
+  });
+
+  test('returns 400 when password too short', async () => {
+    const newUser = {
+      username: 'Tombert',
+      password: 'te',
+      name: 'Robert C. Martin',
+    };
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400);
+  });
 });
 
 
