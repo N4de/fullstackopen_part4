@@ -50,10 +50,12 @@ describe('User POST', () => {
       name: 'Robert C. Martin',
     };
 
-    await api
+    const response = await api
       .post('/api/users')
       .send(newUser)
       .expect(400);
+
+    expect(response.text).toContain('User validation failed');
   });
 
   test('returns 400 when password too short', async () => {
@@ -63,10 +65,12 @@ describe('User POST', () => {
       name: 'Robert C. Martin',
     };
 
-    await api
+    const response = await api
       .post('/api/users')
       .send(newUser)
       .expect(400);
+
+    expect(response.body.error).toContain('password is too short');
   });
 });
 
